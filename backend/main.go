@@ -1,26 +1,30 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/radityaqb/tgtc/backend/handlers"
 	"github.com/radityaqb/tgtc/backend/server"
 )
 
-func ping(w http.ResponseWriter, req *http.Request) {
-
-	fmt.Fprintf(w, "pong\n")
-}
-
 func main() {
+
+	// Init database connection
+	// database.InitDB()
 
 	// Init serve HTTP
 	router := mux.NewRouter()
 
 	// routes http
-	router.HandleFunc("/ping", ping).Methods(http.MethodGet)
+	router.HandleFunc("/ping", handlers.Ping).Methods(http.MethodGet)
+
+	// construct your own API endpoints
+	// endpoint : /add-product
+	// endpoint : /get-product?id=
+	// endpoint : /update-product
+	// endpoint : /delete-product
 
 	serverConfig := server.Config{
 		WriteTimeout: 5 * time.Second,

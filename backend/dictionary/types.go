@@ -7,3 +7,8 @@ type Product struct {
 	ProductPrice float64 `json:"product_price"`
 	ImageURL     string  `json:"image_url"`
 }
+
+type APIResponse struct {
+	Data  interface{} `json:"data"`
+	Error string      `json:"error_message"`
+}
