@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/radityaqb/tgtc/backend/database"
 	"github.com/radityaqb/tgtc/backend/dictionary"
+	"github.com/radityaqb/tgtc/backend/service"
 )
 
 func GetProducts(w http.ResponseWriter, req *http.Request) {
@@ -14,56 +14,26 @@ func GetProducts(w http.ResponseWriter, req *http.Request) {
 
 	// variable declarations
 	var (
-		products []dictionary.Product
-		data     dictionary.APIResponseProducts
+		resp dictionary.APIResponse
+		err  error
 	)
 	// some input validations here
+	//
+	//
+	//
 
-	// get current database connection
-	db := database.GetDB()
-
-	// construct sql statement
-	query := `
-	SELECT
-		product_id,
-		product_name,
-		product_price,
-		product_image,
-		shop_name
-	FROM
-		products
-	`
-
-	// actual query process
-	rows, err := db.Query(query)
-	if err != nil {
-		log.Println(err)
-	}
-	defer rows.Close()
-
-	// loop and struct scan
-	for rows.Next() {
-		var (
-			p dictionary.Product
-		)
-		err = rows.Scan(&p.ID, &p.Name, &p.ProductPrice, &p.ImageURL, &p.ShopName)
-		if err != nil {
-			break
-		}
-		products = append(products, p)
-	}
+	// proceed to the main service
+	resp.Data, err = service.GetProducts()
 
 	// construct api response json
 	if err != nil {
-		data.Error = err.Error()
-	} else {
-		data.Products = products
+		resp.Error = err.Error()
 	}
 
-	resp, err := json.Marshal(data)
+	jsonResponse, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(err)
 	}
 
-	w.Write(resp)
+	w.Write(jsonResponse)
 }

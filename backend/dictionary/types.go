@@ -8,12 +8,7 @@ type Product struct {
 	ImageURL     string  `json:"image_url"`
 }
 
-type APIResponseProducts struct {
-	Products []Product `json:"products"`
-	Error    string    `json:"error_message"`
-}
-
-type APIResponseSingleProduct struct {
-	Product Product `json:"product"`
-	Error   string  `json:"error_message"`
+type APIResponse struct {
+	Data  interface{} `json:"data"`
+	Error string      `json:"error_message"`
 }

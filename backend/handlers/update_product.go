@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 
-	"github.com/radityaqb/tgtc/backend/database"
 	"github.com/radityaqb/tgtc/backend/dictionary"
+	"github.com/radityaqb/tgtc/backend/service"
 )
 
 func UpdateProduct(w http.ResponseWriter, r *http.Request) {
@@ -15,57 +14,27 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	// variable declarations
 	var (
-		data        dictionary.APIResponseSingleProduct
-		row         *sql.Row
-		param       dictionary.Product
-		p           dictionary.Product
-		err         error
-		errorString string
+		resp  dictionary.APIResponse
+		param dictionary.Product
+		err   error
 	)
 	// some input validations here
-	if err = json.NewDecoder(r.Body).Decode(&param); err != nil {
-		errorString = "Body yang dikirim tidak valid"
-	}
+	err = json.NewDecoder(r.Body).Decode(&param)
+	// some input validations here
+	//
+	//
+	//
 
-	// lolos validasi
+	// input validated
 	if err == nil {
-		// get current database connection
-		db := database.GetDB()
-
-		// construct sql statement
-		query := `
-		UPDATE
-			products
-		SET
-			product_name = $1,
-			product_price = $2,
-			product_image = $3,
-			shop_name = $4
-		WHERE
-			product_id = $5
-		RETURNING
-			product_id,
-			product_name,
-			product_price,
-			product_image,
-			shop_name
-		`
-
-		// actual query process
-		row = db.QueryRow(query, param.Name, param.ProductPrice, param.ImageURL, param.ShopName, param.ID)
-		err = row.Scan(&p.ID, &p.Name, &p.ProductPrice, &p.ImageURL, &p.ShopName)
-		if err != nil {
-			errorString = err.Error()
-		}
+		// proceed to the main service
+		resp.Data, err = service.UpdateProduct(param)
 	}
 
-	data.Product = p
-	data.Error = errorString
-
-	resp, err := json.Marshal(data)
+	jsonResponse, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(err)
 	}
 
-	w.Write(resp)
+	w.Write(jsonResponse)
 }

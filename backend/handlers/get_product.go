@@ -1,15 +1,14 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/radityaqb/tgtc/backend/database"
 	"github.com/radityaqb/tgtc/backend/dictionary"
+	"github.com/radityaqb/tgtc/backend/service"
 )
 
 func GetProduct(w http.ResponseWriter, r *http.Request) {
@@ -17,58 +16,34 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 
 	// variable declarations
 	var (
-		data        dictionary.APIResponseSingleProduct
-		row         *sql.Row
-		p           dictionary.Product
-		err         error
-		errorString string
-		productID   int
+		resp      dictionary.APIResponse
+		err       error
+		productID int
 	)
 	// some input validations here
+	//
+	//
+	//
+
 	r.ParseForm()
 	vars := mux.Vars(r)
-	if productID, err = strconv.Atoi(vars["id"]); err != nil {
-		errorString = "Parameter ID tidak valid"
-	}
+	productID, err = strconv.Atoi(vars["id"])
 
-	// lolos validasi
+	// input validated
 	if err == nil {
-		// get current database connection
-		db := database.GetDB()
-
-		// construct sql statement
-		query := `
-		SELECT
-			product_id,
-			product_name,
-			product_price,
-			product_image,
-			shop_name
-		FROM
-			products
-		WHERE
-			product_id = $1
-		`
-
-		// actual query process
-		row = db.QueryRow(query, productID)
-		err = row.Scan(&p.ID, &p.Name, &p.ProductPrice, &p.ImageURL, &p.ShopName)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				errorString = "Data tidak ditemukan"
-			} else {
-				errorString = err.Error()
-			}
-		}
+		// proceed to the main service
+		resp.Data, err = service.GetProduct(productID)
 	}
 
-	data.Product = p
-	data.Error = errorString
+	// construct api response json
+	if err != nil {
+		resp.Error = err.Error()
+	}
 
-	resp, err := json.Marshal(data)
+	jsonResponse, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(err)
 	}
 
-	w.Write(resp)
+	w.Write(jsonResponse)
 }
