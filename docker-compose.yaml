@@ -9,4 +9,3 @@ services:
             LC_ALL: C.UTF-8
             POSTGRES_USER: toped
             POSTGRES_PASSWORD: toped
-            POSTGRES_DB: tokopedia
