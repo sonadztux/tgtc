@@ -29,7 +29,6 @@ func InitDB() {
 	if err != nil {
 		panic(err)
 	}
-	// defer db.Close()
 
 	err = DB.Ping()
 	if err != nil {
