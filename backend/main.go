@@ -28,6 +28,8 @@ func main() {
 	router.HandleFunc("/get-product", handlers.GetProduct).Methods(http.MethodGet)
 
 	// endpoint : /update-product
+	router.HandleFunc("/update-product", handlers.UpdateProduct).Methods(http.MethodPatch)
+
 	// endpoint : /delete-product
 
 	serverConfig := server.Config{

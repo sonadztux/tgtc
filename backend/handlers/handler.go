@@ -57,3 +57,21 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, string(productData))
 }
+
+func UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	var product dictionary.Product
+
+	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
+		http.Error(w, "bad request", 400)
+		return
+	}
+
+	if _, productExist := productMap[product.ID]; productExist {
+		productMap[product.ID] = product
+	} else {
+		http.Error(w, "product not found", 404)
+		return 
+	}
+
+	fmt.Fprintf(w, "success")
+}
