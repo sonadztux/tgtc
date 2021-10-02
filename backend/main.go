@@ -22,7 +22,11 @@ func main() {
 
 	// construct your own API endpoints
 	// endpoint : /add-product
+	router.HandleFunc("/add-product", handlers.AddProduct).Methods(http.MethodPost)
+
 	// endpoint : /get-product?id=
+	router.HandleFunc("/get-product", handlers.GetProduct).Methods(http.MethodGet)
+
 	// endpoint : /update-product
 	// endpoint : /delete-product
 

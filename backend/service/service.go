@@ -2,6 +2,8 @@ package service
 
 import (
 	"fmt"
+
+	"github.com/radityaqb/tgtc/backend/database"
 )
 
 func SampleFunction() {
@@ -9,7 +11,7 @@ func SampleFunction() {
 
 	// // you can connect and
 	// // get current database connection
-	// db := database.GetDB()
+	db := database.GetDB()
 
 	// // construct query
 	// query := `
